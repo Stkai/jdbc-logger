@@ -163,6 +163,7 @@ open class StatementWrapper(private var statement: Statement, open var sql: Stri
     }
 
     override fun clearBatch() {
+        Logger.currentSql = ""
         statement.clearBatch()
     }
 

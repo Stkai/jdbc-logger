@@ -40,7 +40,13 @@ class ConnectionWrapper(private var connection: Connection) : Connection {
     }
 
     override fun createStatement(): Statement {
-        return StatementWrapper(connection.createStatement(), null)
+        return StatementWrapper(
+            connection.createStatement(
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY
+            ),
+            null
+        )
     }
 
     override fun createStatement(resultSetType: Int, resultSetConcurrency: Int): Statement {

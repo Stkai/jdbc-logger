@@ -3,7 +3,6 @@ package com.github.stkai.jdbclogger
 import org.slf4j.LoggerFactory
 import java.sql.ResultSet
 import java.util.UUID
-import java.util.concurrent.TimeUnit
 
 /**
  * @author St.kai
@@ -21,11 +20,11 @@ object Logger {
     fun <T> execute(sql: String?, exec: () -> T): T {
         logSql.trace(sql)
         sql?.let { currentSql = sql }
-        val startTimeNanos = System.currentTimeMillis()
+        val startTimeMillis = System.currentTimeMillis()
         val resultSet = exec()
-        val stopTimeNanos = System.currentTimeMillis()
+        val stopTimeMillis = System.currentTimeMillis()
         val restoreSql = restoreSql(currentSql)
-        val time = TimeUnit.NANOSECONDS.toMillis(stopTimeNanos - startTimeNanos)
+        val time = stopTimeMillis - startTimeMillis
         logSql.info("Time: {} ms, SQL: {}", time, restoreSql)
         if (logTotal.isInfoEnabled) {
             if (resultSet is Int) {
@@ -34,8 +33,7 @@ object Logger {
             if (resultSet is ResultSet) {
                 if (resultSet.statement.updateCount > -1) {
                     logTotal.info("Total {}", resultSet.statement.updateCount)
-                } else {
-                    resultSet.beforeFirst()
+                } else if (resultSet.type != ResultSet.TYPE_FORWARD_ONLY) {
                     resultSet.last()
                     val count = resultSet.row
                     resultSet.beforeFirst()
@@ -61,6 +59,10 @@ object Logger {
 
             else -> params[index - 1] = "'" + x.toString() + "'"
         }
+    }
+
+    fun clearParameters() {
+        this.params = arrayOfNulls(DEFAULT_SIZE)
     }
 
     private fun restoreSql(sql: String?): String {

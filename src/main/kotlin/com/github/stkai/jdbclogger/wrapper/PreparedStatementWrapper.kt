@@ -200,6 +200,7 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
     }
 
     override fun clearBatch() {
+        Logger.currentSql = ""
         statement.clearBatch()
     }
 
@@ -383,6 +384,7 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
     }
 
     override fun clearParameters() {
+        Logger.clearParameters()
         statement.clearParameters()
     }
 
