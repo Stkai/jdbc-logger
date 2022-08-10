@@ -1,5 +1,22 @@
-package com.github.stkai.jdbclogger
+/*
+ * Copyright (c) 2022 St.kai
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package com.github.stkai.jdbclogger.util
+
+import com.github.stkai.jdbclogger.wrapper.StopWatch
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.sql.ResultSet
@@ -13,23 +30,21 @@ import java.util.UUID
 object Logger {
     private val logSql = LoggerFactory.getLogger("jdbc.logger.sql")
     private val logTotal = LoggerFactory.getLogger("jdbc.logger.total")
-    private const val DEFAULT_SIZE = 10
-    private var params = arrayOfNulls<String>(DEFAULT_SIZE)
-    var currentSql: String = ""
+    private var params = arrayOfNulls<String>(0)
+    private var currentSql: String = String()
 
     @SuppressWarnings("NestedBlockDepth")
     fun <T> execute(sql: String?, exec: () -> T): T {
         logSql.trace(sql)
-        sql?.let { currentSql = sql }
-        val startTimeMillis = System.currentTimeMillis()
+        this.setSql(sql)
+        val stopWatch = StopWatch()
         val resultSet = exec()
-        val stopTimeMillis = System.currentTimeMillis()
-        val restoreSql = restoreSql(currentSql)
-        val time = stopTimeMillis - startTimeMillis
-        logSql.info("Time: {} ms, SQL: {}", time, restoreSql)
+        stopWatch.stop()
+        val restoreSql = SqlUtils.parseSql(currentSql, params)
+        logSql.info("Time: {} ms, SQL: {}", stopWatch.getTotalTimeMillis(), restoreSql)
         if (logTotal.isInfoEnabled) {
             if (resultSet is Int) {
-                logTotal.info("Total {}", resultSet)
+                logTotal.info("Total: {}", resultSet)
             }
             if (resultSet is ResultSet) {
                 if (resultSet.statement.updateCount > -1) {
@@ -42,6 +57,7 @@ object Logger {
                 }
             }
         }
+        this.clearSql()
         return resultSet
     }
 
@@ -55,7 +71,6 @@ object Logger {
             is Float -> params[index - 1] = x.toString()
             is Double -> params[index - 1] = x.toString()
             is BigDecimal -> params[index - 1] = x.toString()
-            is String -> params[index - 1] = x
             is ByteArray -> {
                 try {
                     params[index - 1] = x.let { "'" + UUID.nameUUIDFromBytes(x).toString() + "'" }
@@ -69,24 +84,19 @@ object Logger {
         }
     }
 
-    fun clearParameters() {
-        this.params = arrayOfNulls(DEFAULT_SIZE)
+    fun setSql(sql: String?) {
+        if (!sql.isNullOrEmpty()) {
+            this.currentSql = sql
+            this.params = arrayOfNulls(0)
+        }
     }
 
-    private fun restoreSql(sql: String?): String {
-        if (sql == null) {
-            return ""
-        }
-        var resultSql = sql
-        var i = 0
-        resultSql.forEach {
-            if (it == '?') {
-                resultSql = resultSql!!.replaceFirst("?", params[i].orEmpty())
-                i++
-                return@forEach
-            }
-        }
-        return resultSql as String
+    fun clearParameters() {
+        params = arrayOfNulls(0)
+    }
+
+    fun clearSql() {
+        this.currentSql = String()
     }
 
     /**
