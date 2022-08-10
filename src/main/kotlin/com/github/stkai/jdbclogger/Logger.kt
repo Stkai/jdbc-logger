@@ -1,6 +1,7 @@
 package com.github.stkai.jdbclogger
 
 import org.slf4j.LoggerFactory
+import java.math.BigDecimal
 import java.sql.ResultSet
 import java.util.UUID
 
@@ -47,6 +48,13 @@ object Logger {
     fun setParam(index: Int, x: Any?) {
         ensureCapacity(index)
         when (x) {
+            is Boolean -> params[index - 1] = x.toString()
+            is Short -> params[index - 1] = x.toString()
+            is Int -> params[index - 1] = x.toString()
+            is Long -> params[index - 1] = x.toString()
+            is Float -> params[index - 1] = x.toString()
+            is Double -> params[index - 1] = x.toString()
+            is BigDecimal -> params[index - 1] = x.toString()
             is String -> params[index - 1] = x
             is ByteArray -> {
                 try {
