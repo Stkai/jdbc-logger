@@ -2,6 +2,7 @@ package com.github.stkai.jdbclogger.entity
 
 import org.hibernate.Hibernate
 import java.util.UUID
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -19,8 +20,10 @@ data class User(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(length = 16)
     val id: UUID? = null,
 
+    @Column(length = 16)
     var name: String? = null,
 
     var gender: Gender? = null,
