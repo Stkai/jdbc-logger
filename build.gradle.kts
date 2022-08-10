@@ -45,7 +45,7 @@ tasks {
     withType<Test> {
         dependsOn(shadowJar)
         useJUnitPlatform()
-        jvmArgs("-javaagent:${project.buildDir}/libs/${rootProject.name}-${properties("version")}.jar")
+        jvmArgs("-javaagent:${project.buildDir}/libs/${project.name}-${project.version}.jar")
     }
 
     jar {
@@ -66,6 +66,9 @@ tasks {
         exclude("**/module_info.class")
         exclude("**/META-INF/maven/**")
         exclude("reactor/")
+        relocate("org.jetbrains", "${project.group}.org.jetbrains")
+        relocate("kotlin", "${project.group}.kotlin")
+        relocate("javassist", "${project.group}.javassist")
         archiveClassifier.set("")
     }
 
