@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package com.github.stkai.jdbclogger
+package com.github.stkai.jdbclogger.entity
 
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
-import org.springframework.context.annotation.PropertySource
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.util.Date
+import javax.persistence.EntityListeners
+import javax.persistence.MappedSuperclass
 
 /**
  * @author St.kai
  * @version 1.0
- * @date 2022-07-28 19:14
+ * @date 2022-08-11 20:13
  */
-@EnableJpaAuditing
-@SpringBootApplication
-@PropertySource("classpath:application.yml")
-class ApplicationTest
-fun main(args: Array<String>) {
-    runApplication<ApplicationTest>(*args)
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener::class)
+open class Audit {
+    @CreatedDate
+    var createdDate: Date? = null
+
+    @LastModifiedDate
+    var lastModifiedDate: Date? = null
 }
