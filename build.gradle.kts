@@ -25,7 +25,7 @@ repositories {
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:[1,2)")
     implementation("org.javassist:javassist:3.29.0-GA")
-    implementation("org.slf4j:slf4j-api:1.7.36")
+    compileOnly("org.slf4j:slf4j-api:1.7.36")
     testImplementation(kotlin("test"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa")
