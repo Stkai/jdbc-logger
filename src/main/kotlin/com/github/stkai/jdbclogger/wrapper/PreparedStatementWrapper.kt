@@ -258,10 +258,12 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
     }
 
     override fun setNull(parameterIndex: Int, sqlType: Int) {
+        Logger.setParam(parameterIndex, null)
         statement.setNull(parameterIndex, sqlType)
     }
 
     override fun setNull(parameterIndex: Int, sqlType: Int, typeName: String?) {
+        Logger.setParam(parameterIndex, null)
         statement.setNull(parameterIndex, sqlType, typeName)
     }
 
@@ -429,15 +431,18 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
 
     override fun setCharacterStream(parameterIndex: Int, reader: Reader?, length: Long) {
         log.trace("index:{},x:{}", parameterIndex, reader)
+        Logger.setParam(parameterIndex, reader)
         statement.setCharacterStream(parameterIndex, reader, length)
     }
 
     override fun setCharacterStream(parameterIndex: Int, reader: Reader?) {
+        Logger.setParam(parameterIndex, reader)
         statement.setCharacterStream(parameterIndex, reader)
     }
 
     override fun setRef(parameterIndex: Int, x: Ref?) {
         log.trace("index:{},x:{}", parameterIndex, x)
+        Logger.setParam(parameterIndex, x)
         statement.setRef(parameterIndex, x)
     }
 
@@ -448,10 +453,12 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
     }
 
     override fun setBlob(parameterIndex: Int, inputStream: InputStream?, length: Long) {
+        Logger.setParam(parameterIndex, inputStream)
         statement.setBlob(parameterIndex, inputStream, length)
     }
 
     override fun setBlob(parameterIndex: Int, inputStream: InputStream?) {
+        Logger.setParam(parameterIndex, inputStream)
         statement.setBlob(parameterIndex, inputStream)
     }
 
@@ -462,10 +469,12 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
     }
 
     override fun setClob(parameterIndex: Int, reader: Reader?, length: Long) {
+        Logger.setParam(parameterIndex, reader)
         statement.setClob(parameterIndex, reader, length)
     }
 
     override fun setClob(parameterIndex: Int, reader: Reader?) {
+        Logger.setParam(parameterIndex, reader)
         statement.setClob(parameterIndex, reader)
     }
 
@@ -498,10 +507,12 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
     }
 
     override fun setNCharacterStream(parameterIndex: Int, value: Reader?, length: Long) {
+        Logger.setParam(parameterIndex, value)
         statement.setNCharacterStream(parameterIndex, value, length)
     }
 
     override fun setNCharacterStream(parameterIndex: Int, value: Reader?) {
+        Logger.setParam(parameterIndex, value)
         statement.setNCharacterStream(parameterIndex, value)
     }
 
@@ -511,14 +522,17 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
     }
 
     override fun setNClob(parameterIndex: Int, reader: Reader?, length: Long) {
+        Logger.setParam(parameterIndex, reader)
         statement.setNClob(parameterIndex, reader, length)
     }
 
     override fun setNClob(parameterIndex: Int, reader: Reader?) {
+        Logger.setParam(parameterIndex, reader)
         statement.setNClob(parameterIndex, reader)
     }
 
     override fun setSQLXML(parameterIndex: Int, xmlObject: SQLXML?) {
+        Logger.setParam(parameterIndex, xmlObject)
         statement.setSQLXML(parameterIndex, xmlObject)
     }
 }

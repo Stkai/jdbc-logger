@@ -64,6 +64,7 @@ object Logger {
     fun setParam(index: Int, x: Any?) {
         ensureCapacity(index)
         when (x) {
+            null -> params[index - 1] = "null"
             is Boolean -> params[index - 1] = x.toString()
             is Short -> params[index - 1] = x.toString()
             is Int -> params[index - 1] = x.toString()
@@ -80,7 +81,7 @@ object Logger {
                 }
             }
 
-            else -> params[index - 1] = "'" + x.toString() + "'"
+            else -> params[index - 1] = "'$x'"
         }
     }
 
