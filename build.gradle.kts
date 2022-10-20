@@ -7,11 +7,11 @@ fun properties(key: String) = project.findProperty(key).toString()
 plugins {
     kotlin("jvm") version "1.7.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.springframework.boot") version "2.7.2"
-    id("io.spring.dependency-management") version "1.0.12.RELEASE"
+    id("org.springframework.boot") version "2.7.4"
+    id("io.spring.dependency-management") version "1.0.14.RELEASE"
     kotlin("plugin.spring") version "1.7.10"
-    id("io.gitlab.arturbosch.detekt") version "latest.release"
-    id("org.jlleitschuh.gradle.ktlint") version "latest.release"
+    id("io.gitlab.arturbosch.detekt") version "1.21.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
 }
 
 group = properties("group")
