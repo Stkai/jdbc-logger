@@ -129,7 +129,7 @@ class PreparedStatementWrapper(private var statement: PreparedStatement, overrid
         statement.cancel()
     }
 
-    override fun getWarnings(): SQLWarning {
+    override fun getWarnings(): SQLWarning? {
         return statement.warnings
     }
 

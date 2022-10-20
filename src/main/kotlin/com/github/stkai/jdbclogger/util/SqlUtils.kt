@@ -16,30 +16,40 @@
 
 package com.github.stkai.jdbclogger.util
 
+import org.slf4j.LoggerFactory
+
 /**
  * @author St.kai
  * @version 1.0
  * @date 2022-08-10 20:08
  */
 object SqlUtils {
+    private val log = LoggerFactory.getLogger(this::class.java)
+
+    @SuppressWarnings("TooGenericExceptionCaught", "ReturnCount")
     fun parseSql(sql: String, params: Array<String?>): String {
         if (params.isEmpty()) {
             return sql
         }
-        var resultSql = ""
-        var i = 0
-        var count = 0
-        sql.forEach {
-            if (it == '\'') {
-                count++
+        try {
+            var resultSql = ""
+            var i = 0
+            var count = 0
+            sql.forEach {
+                if (it == '\'') {
+                    count++
+                }
+                if (it == '?' && count % 2 == 0) {
+                    resultSql += params[i].orEmpty()
+                    i++
+                    return@forEach
+                }
+                resultSql += it
             }
-            if (it == '?' && count % 2 == 0) {
-                resultSql += params[i].orEmpty()
-                i++
-                return@forEach
-            }
-            resultSql += it
+            return resultSql
+        } catch (ex: Exception) {
+            log.error("还原SQL失败", ex)
+            return sql
         }
-        return resultSql
     }
 }
